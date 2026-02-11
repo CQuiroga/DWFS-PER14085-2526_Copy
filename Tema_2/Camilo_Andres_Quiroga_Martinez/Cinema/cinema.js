@@ -2,20 +2,15 @@
 const N = 10; // Número de filas y columnas
 
 // Función para inicializar la matriz de butacas con estados aleatorios
-/**
- * Initializes the cinema seats matrix with random states.
- * @returns {Array<Array<{id: number, estado: boolean}>>} The matrix of seats.
- */
 function setup() {
     let idContador = 1;
-    const butacas = [];
+    let butacas = [];
     
     for (let i = 0; i < N; i++) {
-        const fila = [];
+        let fila = [];
         for (let j = 0; j < N; j++) {
             // Generar Libre - Reservado aleatoriamente
-            
-            let estadoAleatorio = Math.random() < 0.3; // NOSONAR - Math.random() is sufficient for non-critical state generation
+            let estadoAleatorio = Math.random() < 0.3;
             fila.push({ 
                 id: idContador++, 
                 estado: estadoAleatorio 
@@ -30,19 +25,15 @@ function setup() {
 let butacas = setup();
 
 // Función para reservar asientos
-/**
- * Suggests and reserves consecutive seats in the cinema starting from the back.
- * @param {number} cantidad_reserva - Number of seats to reserve.
- * @returns {Set<number>} Set of reserved seat IDs.
- */
 function suggest(cantidad_reserva) {
     if (cantidad_reserva > N) {
+        console.log("Cantidad de asientos solicitados excede el tamaño de la fila.");
         return new Set();
     }
     
     // Buscar desde la última fila hacia adelante
     for (let i = butacas.length - 1; i >= 0; i--) {
-        const fila = butacas[i];
+        let fila = butacas[i];
         let contador = 0;
         let inicioBloque = 0;
         
@@ -54,11 +45,14 @@ function suggest(cantidad_reserva) {
                 
                 // Si se encuentra suficientes asientos consecutivos
                 if (contador === cantidad_reserva) {
-                    const resultado = new Set();
+                    let resultado = new Set();
+                    console.log(`Fila seleccionada: ${i + 1}`);
+                    console.log("Asientos encontrados:");
                     
                     for (let k = inicioBloque; k < inicioBloque + cantidad_reserva; k++) {
                         resultado.add(fila[k].id);
                         fila[k].estado = true; // marcar asiento como reservado
+                        console.log(`ID: ${fila[k].id}, Estado: reservado`);
                     }
                     return resultado;
                 }
@@ -69,13 +63,11 @@ function suggest(cantidad_reserva) {
         }
     }
     
+    console.log("No se encontró una fila con suficientes asientos libres consecutivos.");
     return new Set();
 }
 
 // Función auxiliar para visualizar el estado de las butacas
-/**
- * Visualizes the current state of the cinema seats in the console.
- */
 function visualizarButacas() {
     console.log("\n=== ESTADO DE LAS BUTACAS ===");
     console.log("O = Libre | X = Ocupado\n");
